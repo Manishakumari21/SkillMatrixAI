@@ -1,0 +1,13 @@
+{
+  "buildCommand": null,
+  "outputDirectory": null,
+  "framework": null,
+  "installCommand": null,
+  "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+  "env": {
+    "MONGO_URI": "@mongodb-uri",
+    "JWT_SECRET": "@jwt-secret",
+    "GROQ_API_KEY": "@groq-api-key",
+    "GEMINI_API_KEY": "@gemini-api-key"
+  }
+}

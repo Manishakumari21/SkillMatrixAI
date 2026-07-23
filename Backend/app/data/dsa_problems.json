@@ -1,0 +1,723 @@
+[
+  {
+    "id": "arr-01",
+    "title": "Two Sum",
+    "difficulty": "Easy",
+    "category": "Arrays",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
+    "examples": [
+      {"input": "nums = [2,7,11,15], target = 9", "output": "[0,1]", "explanation": "nums[0] + nums[1] = 2 + 7 = 9"},
+      {"input": "nums = [3,2,4], target = 6", "output": "[1,2]", "explanation": "nums[1] + nums[2] = 2 + 4 = 6"}
+    ],
+    "hints": ["Use a hash map to store the complement of each element.", "For each number, check if target - num exists in the map."],
+    "solution_approach": "Iterate through the array. For each element, calculate complement = target - current. If complement exists in hash map, return both indices. Otherwise, store current element with its index in the map.",
+    "sample_code": {"python": "def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        comp = target - n\n        if comp in seen:\n            return [seen[comp], i]\n        seen[n] = i", "javascript": "function twoSum(nums, target) {\n  const seen = {};\n  for (let i = 0; i < nums.length; i++) {\n    const comp = target - nums[i];\n    if (comp in seen) return [seen[comp], i];\n    seen[nums[i]] = i;\n  }\n}"},
+    "tags": ["hash-map", "array"]
+  },
+  {
+    "id": "arr-02",
+    "title": "Best Time to Buy and Sell Stock",
+    "difficulty": "Easy",
+    "category": "Arrays",
+    "description": "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy one stock and a different day in the future to sell that stock. Return the maximum profit. If no profit is possible, return 0.",
+    "examples": [
+      {"input": "prices = [7,1,5,3,6,4]", "output": "5", "explanation": "Buy on day 2 (price=1), sell on day 5 (price=6), profit = 5"},
+      {"input": "prices = [7,6,4,3,1]", "output": "0", "explanation": "No profit possible"}
+    ],
+    "hints": ["Track the minimum price seen so far.", "At each step, calculate profit if sold today."],
+    "solution_approach": "Keep track of minimum price. At each day, calculate potential profit (current - min). Update max profit. Time O(n), Space O(1).",
+    "sample_code": {"python": "def max_profit(prices):\n    min_price = float('inf')\n    max_profit = 0\n    for p in prices:\n        min_price = min(min_price, p)\n        max_profit = max(max_profit, p - min_price)\n    return max_profit"},
+    "tags": ["array", "greedy"]
+  },
+  {
+    "id": "arr-03",
+    "title": "Maximum Subarray",
+    "difficulty": "Medium",
+    "category": "Arrays",
+    "description": "Given an integer array nums, find the subarray with the largest sum, and return its sum. A subarray is a contiguous non-empty sequence of elements within an array.",
+    "examples": [
+      {"input": "nums = [-2,1,-3,4,-1,2,1,-5,4]", "output": "6", "explanation": "The subarray [4,-1,2,1] has the largest sum 6"},
+      {"input": "nums = [1]", "output": "1", "explanation": "Single element subarray"}
+    ],
+    "hints": ["Use Kadane's algorithm.", "At each position, decide: extend the current subarray or start fresh."],
+    "solution_approach": "Kadane's algorithm: maintain current_sum. At each element, current_sum = max(nums[i], current_sum + nums[i]). Track global max. Time O(n).",
+    "sample_code": {"python": "def max_subarray(nums):\n    cur = mx = nums[0]\n    for n in nums[1:]:\n        cur = max(n, cur + n)\n        mx = max(mx, cur)\n    return mx"},
+    "tags": ["dynamic-programming", "array"]
+  },
+  {
+    "id": "arr-04",
+    "title": "Product of Array Except Self",
+    "difficulty": "Medium",
+    "category": "Arrays",
+    "description": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. You must write an algorithm that runs in O(n) time and without using the division operation.",
+    "examples": [
+      {"input": "nums = [1,2,3,4]", "output": "[24,12,8,6]", "explanation": "Each element is product of all others"},
+      {"input": "nums = [-1,1,0,-3,3]", "output": "[0,0,9,0,0]", "explanation": "Zero in array means products with that index are 0"}
+    ],
+    "hints": ["Compute prefix products and suffix products separately.", "Use two passes: left-to-right and right-to-left."],
+    "solution_approach": "First pass: build prefix products left to right. Second pass: multiply by suffix products right to left. O(n) time, O(1) extra space (output array doesn't count).",
+    "sample_code": {"python": "def product_except_self(nums):\n    n = len(nums)\n    result = [1] * n\n    left = 1\n    for i in range(n):\n        result[i] = left\n        left *= nums[i]\n    right = 1\n    for i in range(n-1, -1, -1):\n        result[i] *= right\n        right *= nums[i]\n    return result"},
+    "tags": ["array", "prefix-sum"]
+  },
+  {
+    "id": "arr-05",
+    "title": "Merge Intervals",
+    "difficulty": "Medium",
+    "category": "Arrays",
+    "description": "Given an array of intervals where intervals[i] = [start_i, end_i], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
+    "examples": [
+      {"input": "intervals = [[1,3],[2,6],[8,10],[15,18]]", "output": "[[1,6],[8,10],[15,18]]", "explanation": "Intervals [1,3] and [2,6] overlap, merged to [1,6]"},
+      {"input": "intervals = [[1,4],[4,5]]", "output": "[[1,5]]", "explanation": "Intervals [1,4] and [4,5] are adjacent, merged to [1,5]"}
+    ],
+    "hints": ["Sort intervals by start time first.", "Compare each interval's start with the previous interval's end."],
+    "solution_approach": "Sort by start time. Iterate and merge: if current start <= previous end, extend previous end. Otherwise, add new interval. O(n log n) time.",
+    "sample_code": {"python": "def merge(intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for s, e in intervals[1:]:\n        if s <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], e)\n        else:\n            merged.append([s, e])\n    return merged"},
+    "tags": ["array", "sorting"]
+  },
+  {
+    "id": "str-01",
+    "title": "Valid Anagram",
+    "difficulty": "Easy",
+    "category": "Strings",
+    "description": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.",
+    "examples": [
+      {"input": "s = 'anagram', t = 'nagaram'", "output": "true", "explanation": "Same letters, different arrangement"},
+      {"input": "s = 'rat', t = 'car'", "output": "false", "explanation": "Different letters"}
+    ],
+    "hints": ["Count character frequencies.", "Compare the frequency counts."],
+    "solution_approach": "Count characters in both strings using a fixed-size array (26 for lowercase). Compare counts. O(n) time, O(1) space.",
+    "sample_code": {"python": "def is_anagram(s, t):\n    if len(s) != len(t):\n        return False\n    count = [0] * 26\n    for c in s:\n        count[ord(c) - ord('a')] += 1\n    for c in t:\n        count[ord(c) - ord('a')] -= 1\n    return all(x == 0 for x in count)"},
+    "tags": ["string", "hash-map"]
+  },
+  {
+    "id": "str-02",
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "Medium",
+    "category": "Strings",
+    "description": "Given a string s, find the length of the longest substring without repeating characters. A substring is a contiguous sequence of characters within the string.",
+    "examples": [
+      {"input": "s = 'abcabcbb'", "output": "3", "explanation": "The answer is 'abc', with length 3"},
+      {"input": "s = 'bbbbb'", "output": "1", "explanation": "The answer is 'b', with length 1"}
+    ],
+    "hints": ["Use a sliding window approach.", "Track the last seen position of each character."],
+    "solution_approach": "Sliding window with hash map storing last index of each character. When duplicate found, move left pointer past previous occurrence. O(n) time.",
+    "sample_code": {"python": "def length_of_longest_substring(s):\n    seen = {}\n    left = 0\n    max_len = 0\n    for right, c in enumerate(s):\n        if c in seen and seen[c] >= left:\n            left = seen[c] + 1\n        seen[c] = right\n        max_len = max(max_len, right - left + 1)\n    return max_len"},
+    "tags": ["string", "sliding-window"]
+  },
+  {
+    "id": "str-03",
+    "title": "Group Anagrams",
+    "difficulty": "Medium",
+    "category": "Strings",
+    "description": "Given an array of strings strs, group the anagrams together. You can return the answer in any order. An anagram is a word or phrase formed by rearranging the letters of a different word.",
+    "examples": [
+      {"input": "strs = ['eat','tea','tan','ate','nat','bat']", "output": "[['eat','tea','ate'],['tan','nat'],['bat']]", "explanation": "Group by sorted characters"},
+      {"input": "strs = ['']", "output": "[['']]", "explanation": "Empty string forms its own group"}
+    ],
+    "hints": ["Use the sorted version of each string as a key.", "Group strings by their sorted key in a hash map."],
+    "solution_approach": "For each string, sort it to create a key. Use a hash map to group strings with the same sorted key. O(n * k log k) where k is max string length.",
+    "sample_code": {"python": "from collections import defaultdict\n\ndef group_anagrams(strs):\n    groups = defaultdict(list)\n    for s in strs:\n        key = tuple(sorted(s))\n        groups[key].append(s)\n    return list(groups.values())"},
+    "tags": ["string", "hash-map", "sorting"]
+  },
+  {
+    "id": "str-04",
+    "title": "Longest Palindromic Substring",
+    "difficulty": "Medium",
+    "category": "Strings",
+    "description": "Given a string s, return the longest palindromic substring in s. A palindrome reads the same backward as forward.",
+    "examples": [
+      {"input": "s = 'babad'", "output": "'bab' or 'aba'", "explanation": "Both are valid longest palindromic substrings"},
+      {"input": "s = 'cbbd'", "output": "'bb'", "explanation": "'bb' is the longest palindrome"}
+    ],
+    "hints": ["Expand around each possible center.", "A palindrome has a center - either a single character or between two characters."],
+    "solution_approach": "For each index, expand outward treating it as center. Handle both odd-length (single center) and even-length (two centers) palindromes. O(n^2) time, O(1) space.",
+    "sample_code": {"python": "def longest_palindrome(s):\n    def expand(l, r):\n        while l >= 0 and r < len(s) and s[l] == s[r]:\n            l -= 1\n            r += 1\n        return s[l+1:r]\n    \n    result = ''\n    for i in range(len(s)):\n        odd = expand(i, i)\n        even = expand(i, i+1)\n        result = max(result, odd, even, key=len)\n    return result"},
+    "tags": ["string", "dynamic-programming"]
+  },
+  {
+    "id": "str-05",
+    "title": "Palindrome Number",
+    "difficulty": "Easy",
+    "category": "Strings",
+    "description": "Given an integer x, return true if x is a palindrome integer. An integer is a palindrome when it reads the same backward as forward. For example, 121 is a palindrome while 123 is not.",
+    "examples": [
+      {"input": "x = 121", "output": "true", "explanation": "121 reads the same backward"},
+      {"input": "x = -121", "output": "false", "explanation": "Reads as 121- backward, not a palindrome"}
+    ],
+    "hints": ["Negative numbers are never palindromes.", "Convert to string or reverse the number mathematically."],
+    "solution_approach": "Negative numbers return false. Convert to string and compare with its reverse. Or reverse the number mathematically and compare. O(log n) time.",
+    "sample_code": {"python": "def is_palindrome(x):\n    if x < 0:\n        return False\n    s = str(x)\n    return s == s[::-1]"},
+    "tags": ["string", "math"]
+  },
+  {
+    "id": "ll-01",
+    "title": "Reverse Linked List",
+    "difficulty": "Easy",
+    "category": "Linked Lists",
+    "description": "Given the head of a singly linked list, reverse the list, and return the reversed list. Implement iteratively and recursively.",
+    "examples": [
+      {"input": "head = [1,2,3,4,5]", "output": "[5,4,3,2,1]", "explanation": "Reversed the entire list"},
+      {"input": "head = [1,2]", "output": "[2,1]", "explanation": "Reversed two nodes"}
+    ],
+    "hints": ["Use three pointers: prev, current, next.", "Iteratively reverse each node's next pointer."],
+    "solution_approach": "Iterative: maintain prev, current, next. For each node, reverse its next pointer to prev. Move all three forward. O(n) time, O(1) space.",
+    "sample_code": {"python": "def reverse_list(head):\n    prev = None\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev"},
+    "tags": ["linked-list", "two-pointers"]
+  },
+  {
+    "id": "ll-02",
+    "title": "Merge Two Sorted Lists",
+    "difficulty": "Easy",
+    "category": "Linked Lists",
+    "description": "You are given the heads of two sorted linked lists list1 and list2. Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.",
+    "examples": [
+      {"input": "list1 = [1,2,4], list2 = [1,3,4]", "output": "[1,1,2,3,4,4]", "explanation": "Merged and sorted"},
+      {"input": "list1 = [], list2 = [0]", "output": "[0]", "explanation": "One empty list, one with single element"}
+    ],
+    "hints": ["Use a dummy head node to simplify edge cases.", "Compare heads and attach the smaller node."],
+    "solution_approach": "Use a dummy node. Compare heads of both lists, attach smaller to result. Move that pointer forward. Attach remaining. O(n+m) time.",
+    "sample_code": {"python": "def merge_two_lists(l1, l2):\n    dummy = node = ListNode(0)\n    while l1 and l2:\n        if l1.val <= l2.val:\n            node.next = l1\n            l1 = l1.next\n        else:\n            node.next = l2\n            l2 = l2.next\n        node = node.next\n    node.next = l1 or l2\n    return dummy.next"},
+    "tags": ["linked-list", "two-pointers"]
+  },
+  {
+    "id": "ll-03",
+    "title": "Linked List Cycle",
+    "difficulty": "Easy",
+    "category": "Linked Lists",
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it. There is a cycle if some node in the list can be reached again by continuously following the next pointer.",
+    "examples": [
+      {"input": "head = [3,2,0,-4], pos = 1", "output": "true", "explanation": "Tail connects to node at index 1"},
+      {"input": "head = [1], pos = -1", "output": "false", "explanation": "No cycle, pos=-1 means no cycle"}
+    ],
+    "hints": ["Use Floyd's tortoise and hare algorithm.", "Use two pointers, one moving 1 step and another 2 steps."],
+    "solution_approach": "Floyd's cycle detection: slow moves 1 step, fast moves 2 steps. If they meet, there's a cycle. O(n) time, O(1) space.",
+    "sample_code": {"python": "def has_cycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False"},
+    "tags": ["linked-list", "two-pointers"]
+  },
+  {
+    "id": "ll-04",
+    "title": "Remove Nth Node From End of List",
+    "difficulty": "Medium",
+    "category": "Linked Lists",
+    "description": "Given the head of a linked list, remove the nth node from the end of the list and return its head. Do this in one pass.",
+    "examples": [
+      {"input": "head = [1,2,3,4,5], n = 2", "output": "[1,2,3,5]", "explanation": "Removed the 2nd node from end (node with value 4)"},
+      {"input": "head = [1], n = 1", "output": "[]", "explanation": "Removed the only node"}
+    ],
+    "hints": ["Use a two-pointer approach with a gap of n.", "Use a dummy node to handle edge cases."],
+    "solution_approach": "Move first pointer n steps ahead. Then move both pointers until first reaches end. Second pointer is just before the node to remove. O(n) time, one pass.",
+    "sample_code": {"python": "def remove_nth_from_end(head, n):\n    dummy = ListNode(0, head)\n    fast = slow = dummy\n    for _ in range(n + 1):\n        fast = fast.next\n    while fast:\n        fast = fast.next\n        slow = slow.next\n    slow.next = slow.next.next\n    return dummy.next"},
+    "tags": ["linked-list", "two-pointers"]
+  },
+  {
+    "id": "ll-05",
+    "title": "Add Two Numbers",
+    "difficulty": "Medium",
+    "category": "Linked Lists",
+    "description": "You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each node contains a single digit. Add the two numbers and return the sum as a linked list.",
+    "examples": [
+      {"input": "l1 = [2,4,3], l2 = [5,6,4]", "output": "[7,0,8]", "explanation": "342 + 465 = 807"},
+      {"input": "l1 = [0], l2 = [0]", "output": "[0]", "explanation": "0 + 0 = 0"}
+    ],
+    "hints": ["Traverse both lists simultaneously.", "Keep a carry variable for sums >= 10."],
+    "solution_approach": "Add corresponding digits with carry. Create new nodes for each digit. Handle remaining carry at the end. O(max(n,m)) time.",
+    "sample_code": {"python": "def add_two_numbers(l1, l2):\n    dummy = node = ListNode(0)\n    carry = 0\n    while l1 or l2 or carry:\n        v1 = l1.val if l1 else 0\n        v2 = l2.val if l2 else 0\n        carry, val = divmod(v1 + v2 + carry, 10)\n        node.next = ListNode(val)\n        node = node.next\n        l1 = l1.next if l1 else None\n        l2 = l2.next if l2 else None\n    return dummy.next"},
+    "tags": ["linked-list", "math"]
+  },
+  {
+    "id": "tree-01",
+    "title": "Maximum Depth of Binary Tree",
+    "difficulty": "Easy",
+    "category": "Trees",
+    "description": "Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.",
+    "examples": [
+      {"input": "root = [3,9,20,null,null,15,7]", "output": "3", "explanation": "Longest path is 3 -> 20 -> 15 (or 7), depth = 3"},
+      {"input": "root = [1,null,2]", "output": "2", "explanation": "Single chain of 2 nodes"}
+    ],
+    "hints": ["Use recursion: depth = max(left_depth, right_depth) + 1.", "Base case: empty tree has depth 0."],
+    "solution_approach": "Recursive DFS: return 1 + max(maxDepth(left), maxDepth(right)). Base case: None returns 0. O(n) time, O(h) space where h is height.",
+    "sample_code": {"python": "def max_depth(root):\n    if not root:\n        return 0\n    return 1 + max(max_depth(root.left), max_depth(root.right))"},
+    "tags": ["tree", "dfs", "recursion"]
+  },
+  {
+    "id": "tree-02",
+    "title": "Validate Binary Search Tree",
+    "difficulty": "Medium",
+    "category": "Trees",
+    "description": "Given the root of a binary tree, determine if it is a valid binary search tree (BST). A valid BST is defined as: the left subtree contains only nodes with keys less than the node's key, the right subtree contains only nodes with keys greater than the node's key, and both subtrees must also be valid BSTs.",
+    "examples": [
+      {"input": "root = [2,1,3]", "output": "true", "explanation": "Valid BST"},
+      {"input": "root = [5,1,4,null,null,3,6]", "output": "false", "explanation": "Node 4 is in the left subtree of 5 but 4 < 5 is ok, however 3 is in right subtree of 4 but 3 < 4"}
+    ],
+    "hints": ["Pass down min and max constraints.", "Each node must be within a valid range."],
+    "solution_approach": "DFS with min/max bounds. For left child, max becomes parent value. For right child, min becomes parent value. O(n) time.",
+    "sample_code": {"python": "def is_valid_bst(root, lo=float('-inf'), hi=float('inf')):\n    if not root:\n        return True\n    if not lo < root.val < hi:\n        return False\n    return (is_valid_bst(root.left, lo, root.val) and\n            is_valid_bst(root.right, root.val, hi))"},
+    "tags": ["tree", "bst", "dfs"]
+  },
+  {
+    "id": "tree-03",
+    "title": "Binary Tree Level Order Traversal",
+    "difficulty": "Medium",
+    "category": "Trees",
+    "description": "Given the root of a binary tree, return the level order traversal of its nodes' values. Level order traversal visits nodes level by level from left to right.",
+    "examples": [
+      {"input": "root = [3,9,20,null,null,15,7]", "output": "[[3],[9,20],[15,7]]", "explanation": "Three levels: [3], [9,20], [15,7]"},
+      {"input": "root = [1]", "output": "[[1]]", "explanation": "Single node, one level"}
+    ],
+    "hints": ["Use BFS with a queue.", "Process all nodes at current level before moving to next."],
+    "solution_approach": "BFS using queue. For each level, record the size, process that many nodes, enqueue their children. O(n) time.",
+    "sample_code": {"python": "from collections import deque\n\ndef level_order(root):\n    if not root:\n        return []\n    result = []\n    queue = deque([root])\n    while queue:\n        level = []\n        for _ in range(len(queue)):\n            node = queue.popleft()\n            level.append(node.val)\n            if node.left: queue.append(node.left)\n            if node.right: queue.append(node.right)\n        result.append(level)\n    return result"},
+    "tags": ["tree", "bfs", "queue"]
+  },
+  {
+    "id": "tree-04",
+    "title": "Invert Binary Tree",
+    "difficulty": "Easy",
+    "category": "Trees",
+    "description": "Given the root of a binary tree, invert the tree, and return its root. Inverting means swapping left and right children of every node.",
+    "examples": [
+      {"input": "root = [4,2,7,1,3,6,9]", "output": "[4,7,2,9,6,3,1]", "explanation": "Every left and right child swapped"},
+      {"input": "root = [2,1,3]", "output": "[2,3,1]", "explanation": "Simple swap"}
+    ],
+    "hints": ["Use recursion: swap left and right, then recurse.", "Or use BFS/DFS iteratively."],
+    "solution_approach": "Recursive: swap root.left and root.right, then invert both subtrees. O(n) time.",
+    "sample_code": {"python": "def invert_tree(root):\n    if not root:\n        return None\n    root.left, root.right = root.right, root.left\n    invert_tree(root.left)\n    invert_tree(root.right)\n    return root"},
+    "tags": ["tree", "dfs", "recursion"]
+  },
+  {
+    "id": "tree-05",
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "difficulty": "Medium",
+    "category": "Trees",
+    "description": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes p and q. The LCA is the deepest node that has both p and q as descendants (a node can be a descendant of itself).",
+    "examples": [
+      {"input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1", "output": "3", "explanation": "LCA of 5 and 1 is 3"},
+      {"input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4", "output": "5", "explanation": "5 is ancestor of 4, so LCA is 5"}
+    ],
+    "hints": ["If current node is None, p, or q, return it.", "Recurse left and right; if both return non-None, current is LCA."],
+    "solution_approach": "Recursive post-order. If root is p or q, return root. Recurse left and right. If both return, root is LCA. If only one returns, propagate that. O(n) time.",
+    "sample_code": {"python": "def lowest_common_ancestor(root, p, q):\n    if not root or root == p or root == q:\n        return root\n    left = lowest_common_ancestor(root.left, p, q)\n    right = lowest_common_ancestor(root.right, p, q)\n    if left and right:\n        return root\n    return left or right"},
+    "tags": ["tree", "dfs", "recursion"]
+  },
+  {
+    "id": "graph-01",
+    "title": "Number of Islands",
+    "difficulty": "Medium",
+    "category": "Graphs",
+    "description": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.",
+    "examples": [
+      {"input": "grid = [['1','1','0'],['1','0','0'],['0','0','1']]", "output": "2", "explanation": "Two separate islands"},
+      {"input": "grid = [['1','1','1'],['0','0','0'],['1','1','1']]", "output": "2", "explanation": "Two separate islands"}
+    ],
+    "hints": ["Use DFS or BFS to flood-fill each island.", "Mark visited cells to avoid counting twice."],
+    "solution_approach": "Iterate through grid. When '1' found, increment count and DFS/BFS to mark all connected '1's as visited. O(m*n) time.",
+    "sample_code": {"python": "def num_islands(grid):\n    def dfs(i, j):\n        if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] != '1':\n            return\n        grid[i][j] = '0'\n        dfs(i+1, j)\n        dfs(i-1, j)\n        dfs(i, j+1)\n        dfs(i, j-1)\n    \n    count = 0\n    for i in range(len(grid)):\n        for j in range(len(grid[0])):\n            if grid[i][j] == '1':\n                count += 1\n                dfs(i, j)\n    return count"},
+    "tags": ["graph", "dfs", "matrix"]
+  },
+  {
+    "id": "graph-02",
+    "title": "Clone Graph",
+    "difficulty": "Medium",
+    "category": "Graphs",
+    "description": "Given a reference of a node in a connected undirected graph, return a deep copy of the graph. Each node contains a value and a list of its neighbors.",
+    "examples": [
+      {"input": "adjList = [[2,4],[1,3],[2,4],[1,3]]", "output": "[[2,4],[1,3],[2,4],[1,3]]", "explanation": "Deep copy of the graph"},
+      {"input": "adjList = [[]]", "output": "[[]]", "explanation": "Single node with no neighbors"}
+    ],
+    "hints": ["Use a hash map to track cloned nodes.", "DFS or BFS, creating clones as you visit."],
+    "solution_approach": "DFS with visited map. For each node, if not cloned, create clone and recurse on neighbors. O(V+E) time.",
+    "sample_code": {"python": "def clone_graph(node):\n    if not node:\n        return None\n    visited = {}\n    \n    def dfs(n):\n        if n in visited:\n            return visited[n]\n        clone = Node(n.val)\n        visited[n] = clone\n        for neighbor in n.neighbors:\n            clone.neighbors.append(dfs(neighbor))\n        return clone\n    \n    return dfs(node)"},
+    "tags": ["graph", "dfs", "hash-map"]
+  },
+  {
+    "id": "graph-03",
+    "title": "Course Schedule",
+    "difficulty": "Medium",
+    "category": "Graphs",
+    "description": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi before course ai. Return true if you can finish all courses (detect cycle).",
+    "examples": [
+      {"input": "numCourses = 2, prerequisites = [[1,0]]", "output": "true", "explanation": "Take course 0 first, then course 1"},
+      {"input": "numCourses = 2, prerequisites = [[1,0],[0,1]]", "output": "false", "explanation": "Circular dependency, impossible"}
+    ],
+    "hints": ["This is a cycle detection problem in a directed graph.", "Use topological sort (Kahn's algorithm) or DFS with states."],
+    "solution_approach": "Kahn's algorithm (BFS topological sort): compute in-degrees, process nodes with 0 in-degree, reduce neighbors' in-degrees. If all processed, no cycle. O(V+E) time.",
+    "sample_code": {"python": "from collections import deque\n\ndef can_finish(num, prereqs):\n    adj = [[] for _ in range(num)]\n    indeg = [0] * num\n    for a, b in prereqs:\n        adj[b].append(a)\n        indeg[a] += 1\n    queue = deque([i for i in range(num) if indeg[i] == 0])\n    count = 0\n    while queue:\n        node = queue.popleft()\n        count += 1\n        for nei in adj[node]:\n            indeg[nei] -= 1\n            if indeg[nei] == 0:\n                queue.append(nei)\n    return count == num"},
+    "tags": ["graph", "topological-sort", "bfs"]
+  },
+  {
+    "id": "graph-04",
+    "title": "Pacific Atlantic Water Flow",
+    "difficulty": "Medium",
+    "category": "Graphs",
+    "description": "Given an m x n matrix of heights, where each cell represents the height of terrain, water flows from a cell to an adjacent cell with equal or lower height. Determine the list of cells where water can flow to both the Pacific and Atlantic oceans.",
+    "examples": [
+      {"input": "heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5]]", "output": "[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]", "explanation": "These cells can reach both oceans"},
+      {"input": "heights = [[1]]", "output": "[[0,0]]", "explanation": "Single cell touches both oceans"}
+    ],
+    "hints": ["Reverse the problem: start from ocean cells and flow backwards (uphill).", "Use DFS from Pacific border and Atlantic border, then find intersection."],
+    "solution_approach": "DFS from all Pacific-border cells and all Atlantic-border cells. Mark reachable cells. Intersection of both sets is the answer. O(m*n) time.",
+    "sample_code": {"python": "def pacific_atlantic(heights):\n    rows, cols = len(heights), len(heights[0])\n    pac, atl = set(), set()\n    \n    def dfs(r, c, reach, prev):\n        if (r, c) in reach or r < 0 or r >= rows or c < 0 or c >= cols or heights[r][c] < prev:\n            return\n        reach.add((r, c))\n        for dr, dc in [(0,1),(0,-1),(1,0),(-1,0)]:\n            dfs(r+dr, c+dc, reach, heights[r][c])\n    \n    for i in range(rows):\n        dfs(i, 0, pac, -1)\n        dfs(i, cols-1, atl, -1)\n    for j in range(cols):\n        dfs(0, j, pac, -1)\n        dfs(rows-1, j, atl, -1)\n    \n    return list(pac & atl)"},
+    "tags": ["graph", "dfs", "matrix"]
+  },
+  {
+    "id": "graph-05",
+    "title": "Graph Valid Tree",
+    "difficulty": "Medium",
+    "category": "Graphs",
+    "description": "Given n nodes labeled from 0 to n-1 and a list of undirected edges, write a function to check whether these edges form a valid tree. A valid tree is connected and has no cycles.",
+    "examples": [
+      {"input": "n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]", "output": "true", "explanation": "Connected, no cycles - valid tree"},
+      {"input": "n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]", "output": "false", "explanation": "Has cycle (1-2-3-1)"}
+    ],
+    "hints": ["A tree with n nodes has exactly n-1 edges.", "Check connectivity AND no cycles using Union-Find or DFS."],
+    "solution_approach": "Union-Find: process edges, if two nodes already connected, cycle exists. After all edges, check all nodes are connected. O(E * α(N)) time.",
+    "sample_code": {"python": "def valid_tree(n, edges):\n    if len(edges) != n - 1:\n        return False\n    parent = list(range(n))\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    for a, b in edges:\n        ra, rb = find(a), find(b)\n        if ra == rb:\n            return False\n        parent[ra] = rb\n    return True"},
+    "tags": ["graph", "union-find", "tree"]
+  },
+  {
+    "id": "dp-01",
+    "title": "Climbing Stairs",
+    "difficulty": "Easy",
+    "category": "Dynamic Programming",
+    "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+    "examples": [
+      {"input": "n = 2", "output": "2", "explanation": "1+1 or 2"},
+      {"input": "n = 3", "output": "3", "explanation": "1+1+1, 1+2, or 2+1"}
+    ],
+    "hints": ["This is the Fibonacci sequence in disguise.", "ways(n) = ways(n-1) + ways(n-2)."],
+    "solution_approach": "DP: dp[i] = dp[i-1] + dp[i-2]. Base: dp[1]=1, dp[2]=2. Or use two variables. O(n) time, O(1) space.",
+    "sample_code": {"python": "def climb_stairs(n):\n    if n <= 2:\n        return n\n    a, b = 1, 2\n    for _ in range(3, n + 1):\n        a, b = b, a + b\n    return b"},
+    "tags": ["dynamic-programming", "math"]
+  },
+  {
+    "id": "dp-02",
+    "title": "Coin Change",
+    "difficulty": "Medium",
+    "category": "Dynamic Programming",
+    "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.",
+    "examples": [
+      {"input": "coins = [1,5,10,25], amount = 30", "output": "2", "explanation": "25 + 5 = 30, only 2 coins"},
+      {"input": "coins = [2], amount = 3", "output": "-1", "explanation": "Cannot make 3 with only 2s"}
+    ],
+    "hints": ["Build up from 0 to amount.", "For each amount, try all coins and take the minimum."],
+    "solution_approach": "Bottom-up DP. dp[i] = min coins for amount i. For each i, try each coin: dp[i] = min(dp[i], dp[i-coin]+1). O(amount * coins) time.",
+    "sample_code": {"python": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for c in coins:\n            if c <= i:\n                dp[i] = min(dp[i], dp[i - c] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1"},
+    "tags": ["dynamic-programming", "greedy"]
+  },
+  {
+    "id": "dp-03",
+    "title": "Longest Increasing Subsequence",
+    "difficulty": "Medium",
+    "category": "Dynamic Programming",
+    "description": "Given an integer array nums, return the length of the longest strictly increasing subsequence. A subsequence is a sequence derived from an array by deleting some or no elements without changing the order of the remaining elements.",
+    "examples": [
+      {"input": "nums = [10,9,2,5,3,7,101,18]", "output": "4", "explanation": "LIS is [2,3,7,101] or [2,3,7,18]"},
+      {"input": "nums = [0,1,0,3,2,3]", "output": "4", "explanation": "LIS is [0,1,2,3]"}
+    ],
+    "hints": ["DP approach: dp[i] = length of LIS ending at index i.", "Binary search approach: maintain a sorted tails array."],
+    "solution_approach": "DP: for each i, check all j < i and update dp[i] = max(dp[j]+1) if nums[j] < nums[i]. O(n^2). Or use patience sorting with binary search for O(n log n).",
+    "sample_code": {"python": "import bisect\n\ndef length_of_lis(nums):\n    tails = []\n    for n in nums:\n        pos = bisect.bisect_left(tails, n)\n        if pos == len(tails):\n            tails.append(n)\n        else:\n            tails[pos] = n\n    return len(tails)"},
+    "tags": ["dynamic-programming", "binary-search"]
+  },
+  {
+    "id": "dp-04",
+    "title": "House Robber",
+    "difficulty": "Medium",
+    "category": "Dynamic Programming",
+    "description": "You are a robber planning to rob houses along a street. Each house has a certain amount of money stashed. The only constraint stopping you from robbing each of them is that adjacent houses have security systems connected. If two adjacent houses were broken into on the same night, the police are alerted. Given an array nums representing the amount of money at each house, return the maximum amount you can rob without alerting the police.",
+    "examples": [
+      {"input": "nums = [1,2,3,1]", "output": "4", "explanation": "Rob house 1 and 3: 1 + 3 = 4"},
+      {"input": "nums = [2,7,9,3,1]", "output": "12", "explanation": "Rob house 1,3,5: 2 + 9 + 1 = 12"}
+    ],
+    "hints": ["At each house, choose: rob it (add to previous-previous max) or skip it (take previous max).", "dp[i] = max(dp[i-1], dp[i-2] + nums[i])."],
+    "solution_approach": "DP with two variables. At each step: skip = max_so_far, rob = prev_max + current. Update prev_max and max_so_far. O(n) time, O(1) space.",
+    "sample_code": {"python": "def rob(nums):\n    if len(nums) == 1:\n        return nums[0]\n    prev2, prev1 = 0, 0\n    for n in nums:\n        prev2, prev1 = prev1, max(prev1, prev2 + n)\n    return prev1"},
+    "tags": ["dynamic-programming"]
+  },
+  {
+    "id": "dp-05",
+    "title": "0/1 Knapsack",
+    "difficulty": "Medium",
+    "category": "Dynamic Programming",
+    "description": "Given n items, each with a weight and a value, determine the maximum value that can be obtained by putting items in a knapsack of capacity W. You can either take or leave each item (0/1 choice).",
+    "examples": [
+      {"input": "weights=[1,3,4,5], values=[1,4,5,7], capacity=7", "output": "9", "explanation": "Take items with weight 3 and 4 (value 4+5=9)"},
+      {"input": "weights=[1,2,3], values=[6,10,12], capacity=5", "output": "22", "explanation": "Take items with weight 2 and 3 (value 10+12=22)"}
+    ],
+    "hints": ["Build a 2D DP table: dp[i][w] = max value using first i items with capacity w.", "For each item, choose: include it or exclude it."],
+    "solution_approach": "2D DP: dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i]). Space-optimized to 1D. O(n*W) time.",
+    "sample_code": {"python": "def knapsack(weights, values, W):\n    n = len(weights)\n    dp = [0] * (W + 1)\n    for i in range(n):\n        for w in range(W, weights[i] - 1, -1):\n            dp[w] = max(dp[w], dp[w - weights[i]] + values[i])\n    return dp[W]"},
+    "tags": ["dynamic-programming", "optimization"]
+  },
+  {
+    "id": "sort-01",
+    "title": "Merge Sort",
+    "difficulty": "Medium",
+    "category": "Sorting & Searching",
+    "description": "Implement the merge sort algorithm. Given an array of integers, sort it in ascending order using the merge sort technique. Merge sort is a divide-and-conquer algorithm.",
+    "examples": [
+      {"input": "[38,27,43,3,9,82,10]", "output": "[3,10,27,38,43,82,9]", "explanation": "Standard merge sort output"},
+      {"input": "[5,1,1,2,0,0]", "output": "[0,0,1,1,2,5]", "explanation": "Handles duplicates"}
+    ],
+    "hints": ["Split array in half recursively until single elements.", "Merge two sorted halves back together."],
+    "solution_approach": "Divide: split array in half. Conquer: recursively sort halves. Combine: merge two sorted arrays. O(n log n) time, O(n) space.",
+    "sample_code": {"python": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)\n\ndef merge(l, r):\n    result = []\n    i = j = 0\n    while i < len(l) and j < len(r):\n        if l[i] <= r[j]:\n            result.append(l[i]); i += 1\n        else:\n            result.append(r[j]); j += 1\n    result.extend(l[i:])\n    result.extend(r[j:])\n    return result"},
+    "tags": ["sorting", "divide-and-conquer"]
+  },
+  {
+    "id": "sort-02",
+    "title": "Binary Search",
+    "difficulty": "Easy",
+    "category": "Sorting & Searching",
+    "description": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return -1. You must write an algorithm with O(log n) runtime complexity.",
+    "examples": [
+      {"input": "nums = [-1,0,3,5,9,12], target = 9", "output": "4", "explanation": "9 is at index 4"},
+      {"input": "nums = [-1,0,3,5,9,12], target = 2", "output": "-1", "explanation": "2 not in array"}
+    ],
+    "hints": ["Compare target with middle element.", "Eliminate half the array each step."],
+    "solution_approach": "Standard binary search: maintain left and right pointers. Compare mid with target, move left or right accordingly. O(log n) time.",
+    "sample_code": {"python": "def binary_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1"},
+    "tags": ["binary-search", "sorting"]
+  },
+  {
+    "id": "sort-03",
+    "title": "Search in Rotated Sorted Array",
+    "difficulty": "Medium",
+    "category": "Sorting & Searching",
+    "description": "Given a sorted array that has been rotated at some pivot unknown to you beforehand, and a target value, return the index if found or -1. You must find it in O(log n) time.",
+    "examples": [
+      {"input": "nums = [4,5,6,7,0,1,2], target = 0", "output": "4", "explanation": "0 is at index 4"},
+      {"input": "nums = [4,5,6,7,0,1,2], target = 3", "output": "-1", "explanation": "3 not in array"}
+    ],
+    "hints": ["One half is always sorted.", "Determine which half is sorted, then check if target lies in that range."],
+    "solution_approach": "Modified binary search. At each step, determine which half is sorted. If target is in sorted half, search there; otherwise search the other half. O(log n).",
+    "sample_code": {"python": "def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[lo] <= nums[mid]:\n            if nums[lo] <= target < nums[mid]:\n                hi = mid - 1\n            else:\n                lo = mid + 1\n        else:\n            if nums[mid] < target <= nums[hi]:\n                lo = mid + 1\n            else:\n                hi = mid - 1\n    return -1"},
+    "tags": ["binary-search", "sorting"]
+  },
+  {
+    "id": "sort-04",
+    "title": "Find Minimum in Rotated Sorted Array",
+    "difficulty": "Medium",
+    "category": "Sorting & Searching",
+    "description": "Suppose an array of length n sorted in ascending order is rotated between 1 and n times. Given the rotated array, return the minimum element. You must find it in O(log n) time.",
+    "examples": [
+      {"input": "nums = [3,4,5,1,2]", "output": "1", "explanation": "Array was rotated, minimum is 1"},
+      {"input": "nums = [4,5,6,7,0,1,2]", "output": "0", "explanation": "Minimum is 0"}
+    ],
+    "hints": ["Compare mid with the rightmost element.", "If mid > right, minimum is in the right half; otherwise left half."],
+    "solution_approach": "Binary search comparing mid with right boundary. If nums[mid] > nums[right], pivot is in right half. Otherwise, left half. O(log n).",
+    "sample_code": {"python": "def find_min(nums):\n    lo, hi = 0, len(nums) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] > nums[hi]:\n            lo = mid + 1\n        else:\n            hi = mid\n    return nums[lo]"},
+    "tags": ["binary-search", "sorting"]
+  },
+  {
+    "id": "sort-05",
+    "title": "Kth Largest Element in an Array",
+    "difficulty": "Medium",
+    "category": "Sorting & Searching",
+    "description": "Given an integer array nums and an integer k, return the kth largest element in the array. Note that it is the kth largest element in the sorted order, not the kth distinct element.",
+    "examples": [
+      {"input": "nums = [3,2,1,5,6,4], k = 2", "output": "5", "explanation": "2nd largest is 5"},
+      {"input": "nums = [3,2,3,1,2,4,5,5,6], k = 4", "output": "4", "explanation": "4th largest is 4"}
+    ],
+    "hints": ["Sort and pick the kth from the end.", "Or use a min-heap of size k.", "Or use quickselect."],
+    "solution_approach": "Min-heap approach: maintain a heap of size k. For each element, if heap size < k, push; else if element > heap min, replace. O(n log k) time.",
+    "sample_code": {"python": "import heapq\n\ndef find_kth_largest(nums, k):\n    heap = []\n    for n in nums:\n        heapq.heappush(heap, n)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]"},
+    "tags": ["sorting", "heap", "quickselect"]
+  },
+  {
+    "id": "sq-01",
+    "title": "Valid Parentheses",
+    "difficulty": "Easy",
+    "category": "Stack & Queue",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. An input string is valid if open brackets are closed by the same type of brackets and in the correct order.",
+    "examples": [
+      {"input": "s = '()[]{}'", "output": "true", "explanation": "All brackets properly matched"},
+      {"input": "s = '(]'", "output": "false", "explanation": "Mismatched bracket types"}
+    ],
+    "hints": ["Use a stack to track opening brackets.", "When closing bracket found, check if top of stack is matching opening bracket."],
+    "solution_approach": "Push opening brackets onto stack. For closing brackets, check if stack top matches. Stack must be empty at end. O(n) time.",
+    "sample_code": {"python": "def is_valid(s):\n    stack = []\n    match = {')': '(', ']': '[', '}': '{'}\n    for c in s:\n        if c in match:\n            if not stack or stack[-1] != match[c]:\n                return False\n            stack.pop()\n        else:\n            stack.append(c)\n    return len(stack) == 0"},
+    "tags": ["stack", "string"]
+  },
+  {
+    "id": "sq-02",
+    "title": "Min Stack",
+    "difficulty": "Medium",
+    "category": "Stack & Queue",
+    "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the MinStack class with O(1) time complexity for all operations.",
+    "examples": [
+      {"input": "push(-2), push(0), push(-3), getMin(), pop(), top(), getMin()", "output": "[-2, 0, -3]", "explanation": "getMin returns -3, after pop top is 0, getMin returns -2"},
+      {"input": "push(1), push(2), top(), getMin(), pop(), getMin()", "output": "[2, 1, 2]", "explanation": "Standard min stack behavior"}
+    ],
+    "hints": ["Use two stacks: one for values, one for minimums.", "Or store (value, current_min) pairs in a single stack."],
+    "solution_approach": "Maintain a parallel min-stack. When pushing, also push current min. When popping, pop both. O(1) for all operations.",
+    "sample_code": {"python": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.mins = []\n    \n    def push(self, val):\n        self.stack.append(val)\n        self.mins.append(val if not self.mins else min(val, self.mins[-1]))\n    \n    def pop(self):\n        self.stack.pop()\n        self.mins.pop()\n    \n    def top(self):\n        return self.stack[-1]\n    \n    def get_min(self):\n        return self.mins[-1]"},
+    "tags": ["stack", "design"]
+  },
+  {
+    "id": "sq-03",
+    "title": "Implement Queue using Stacks",
+    "difficulty": "Easy",
+    "category": "Stack & Queue",
+    "description": "Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue: push, peek, pop, and empty.",
+    "examples": [
+      {"input": "push(1), push(2), peek(), pop(), empty()", "output": "[1, 1, false]", "explanation": "Peek returns front (1), pop returns 1, not empty"},
+      {"input": "push(1), push(2), push(3), peek(), pop(), pop()", "output": "[1, 1, 2]", "explanation": "FIFO order maintained"}
+    ],
+    "hints": ["Use two stacks: one for input, one for output.", "When output stack is empty, transfer all from input stack."],
+    "solution_approach": "Amortized O(1): push to input stack. When output empty, pop all from input to output (reverses order). Pop/peek from output. O(1) amortized.",
+    "sample_code": {"python": "class MyQueue:\n    def __init__(self):\n        self.inp = []\n        self.out = []\n    \n    def push(self, x):\n        self.inp.append(x)\n    \n    def _transfer(self):\n        if not self.out:\n            while self.inp:\n                self.out.append(self.inp.pop())\n    \n    def pop(self):\n        self._transfer()\n        return self.out.pop()\n    \n    def peek(self):\n        self._transfer()\n        return self.out[-1]\n    \n    def empty(self):\n        return not self.inp and not self.out"},
+    "tags": ["stack", "queue", "design"]
+  },
+  {
+    "id": "sq-04",
+    "title": "Daily Temperatures",
+    "difficulty": "Medium",
+    "category": "Stack & Queue",
+    "description": "Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.",
+    "examples": [
+      {"input": "temperatures = [73,74,75,71,69,72,76,73]", "output": "[1,1,4,2,1,1,0,0]", "explanation": "Day 0 waits 1 day for 74, day 2 waits 4 days for 76, etc."},
+      {"input": "temperatures = [30,40,50,60]", "output": "[1,1,1,0]", "explanation": "Each day waits 1 day for warmer"}
+    ],
+    "hints": ["Use a monotonic decreasing stack.", "Store indices in the stack, compare temperatures."],
+    "solution_approach": "Monotonic stack: iterate temperatures. While stack top has lower temp, pop and calculate distance. Push current index. O(n) time.",
+    "sample_code": {"python": "def daily_temperatures(temps):\n    result = [0] * len(temps)\n    stack = []\n    for i, t in enumerate(temps):\n        while stack and temps[stack[-1]] < t:\n            j = stack.pop()\n            result[j] = i - j\n        stack.append(i)\n    return result"},
+    "tags": ["stack", "monotonic-stack"]
+  },
+  {
+    "id": "sq-05",
+    "title": "Sliding Window Maximum",
+    "difficulty": "Hard",
+    "category": "Stack & Queue",
+    "description": "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. Return the max value in each window position.",
+    "examples": [
+      {"input": "nums = [1,3,-1,-3,5,3,6,7], k = 3", "output": "[3,3,5,5,6,7]", "explanation": "Windows: [1,3,-1]→3, [3,-1,-3]→3, [-1,-3,5]→5, etc."},
+      {"input": "nums = [1], k = 1", "output": "[1]", "explanation": "Single element"}
+    ],
+    "hints": ["Use a monotonic decreasing deque.", "Remove elements that are smaller than current from the back."],
+    "solution_approach": "Monotonic deque storing indices. Remove from back if smaller than current. Remove from front if out of window. Front is always max. O(n) time.",
+    "sample_code": {"python": "from collections import deque\n\ndef max_sliding_window(nums, k):\n    result = []\n    dq = deque()\n    for i, n in enumerate(nums):\n        while dq and nums[dq[-1]] <= n:\n            dq.pop()\n        dq.append(i)\n        if dq[0] <= i - k:\n            dq.popleft()\n        if i >= k - 1:\n            result.append(nums[dq[0]])\n    return result"},
+    "tags": ["stack", "deque", "sliding-window"]
+  },
+  {
+    "id": "hm-01",
+    "title": "Contains Duplicate",
+    "difficulty": "Easy",
+    "category": "HashMap",
+    "description": "Given an integer array nums, return true if any value appears at least twice, and false if every element is distinct.",
+    "examples": [
+      {"input": "nums = [1,2,3,1]", "output": "true", "explanation": "1 appears twice"},
+      {"input": "nums = [1,2,3,4]", "output": "false", "explanation": "All distinct"}
+    ],
+    "hints": ["Use a set to track seen elements.", "If element already in set, duplicate found."],
+    "solution_approach": "Hash set: iterate and add elements. If element already in set, return True. O(n) time, O(n) space.",
+    "sample_code": {"python": "def contains_duplicate(nums):\n    return len(nums) != len(set(nums))"},
+    "tags": ["hash-map", "array"]
+  },
+  {
+    "id": "hm-02",
+    "title": "Roman to Integer",
+    "difficulty": "Easy",
+    "category": "HashMap",
+    "description": "Given a roman numeral, convert it to an integer. Roman numerals are represented by seven different symbols: I, V, X, L, C, D, M. If a smaller symbol appears before a larger one, it is subtracted.",
+    "examples": [
+      {"input": "s = 'III'", "output": "3", "explanation": "I + I + I = 3"},
+      {"input": "s = 'MCMXCIV'", "output": "1994", "explanation": "M(1000) + CM(900) + XC(90) + IV(4) = 1994"}
+    ],
+    "hints": ["Map each symbol to its value.", "If current value is less than next value, subtract it."],
+    "solution_approach": "Right to left iteration. If current value >= next, add; else subtract. O(n) time.",
+    "sample_code": {"python": "def roman_to_int(s):\n    vals = {'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000}\n    result = 0\n    for i in range(len(s)):\n        if i + 1 < len(s) and vals[s[i]] < vals[s[i+1]]:\n            result -= vals[s[i]]\n        else:\n            result += vals[s[i]]\n    return result"},
+    "tags": ["hash-map", "string", "math"]
+  },
+  {
+    "id": "hm-03",
+    "title": "LRU Cache",
+    "difficulty": "Medium",
+    "category": "HashMap",
+    "description": "Design a data structure that follows the constraints of a Least Recently Used (LRU) cache. Implement the LRUCache class with get and put methods, both in O(1) average time complexity.",
+    "examples": [
+      {"input": "LRUCache(2), put(1,1), put(2,2), get(1), put(3,3), get(2)", "output": "[1, -1]", "explanation": "get(1) returns 1. put(3,3) evicts key 2. get(2) returns -1"},
+      {"input": "LRUCache(1), put(2,1), get(2), put(3,2), get(2)", "output": "[1, -1]", "explanation": "put(3,2) evicts key 2"}
+    ],
+    "hints": ["Combine a hash map with a doubly linked list.", "Hash map for O(1) lookup, linked list for O(1) reordering."],
+    "solution_approach": "HashMap stores key -> node. Doubly linked list maintains order (most recent at head). Get: move to head, return value. Put: add to head, evict from tail if full. O(1) both.",
+    "sample_code": {"python": "class Node:\n    def __init__(self, k=0, v=0):\n        self.key, self.val = k, v\n        self.prev = self.next = None\n\nclass LRUCache:\n    def __init__(self, cap):\n        self.cap = cap\n        self.map = {}\n        self.head, self.tail = Node(), Node()\n        self.head.next, self.tail.prev = self.tail, self.head\n    \n    def _remove(self, node):\n        node.prev.next = node.next\n        node.next.prev = node.prev\n    \n    def _add_front(self, node):\n        node.next = self.head.next\n        node.prev = self.head\n        self.head.next.prev = node\n        self.head.next = node\n    \n    def get(self, key):\n        if key not in self.map:\n            return -1\n        node = self.map[key]\n        self._remove(node)\n        self._add_front(node)\n        return node.val\n    \n    def put(self, key, val):\n        if key in self.map:\n            self._remove(self.map[key])\n        node = Node(key, val)\n        self._add_front(node)\n        self.map[key] = node\n        if len(self.map) > self.cap:\n            lru = self.tail.prev\n            self._remove(lru)\n            del self.map[lru.key]"},
+    "tags": ["hash-map", "linked-list", "design"]
+  },
+  {
+    "id": "hm-04",
+    "title": "Top K Frequent Elements",
+    "difficulty": "Medium",
+    "category": "HashMap",
+    "description": "Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order. The answer is guaranteed to be unique.",
+    "examples": [
+      {"input": "nums = [1,1,1,2,2,3], k = 2", "output": "[1,2]", "explanation": "1 appears 3 times, 2 appears 2 times"},
+      {"input": "nums = [1], k = 1", "output": "[1]", "explanation": "Only one element"}
+    ],
+    "hints": ["Count frequencies with a hash map.", "Use a bucket sort approach or a heap."],
+    "solution_approach": "Count frequencies. Bucket sort: create buckets indexed by frequency. Collect top k from high to low buckets. O(n) time.",
+    "sample_code": {"python": "from collections import Counter\n\ndef top_k_frequent(nums, k):\n    count = Counter(nums)\n    buckets = [[] for _ in range(len(nums) + 1)]\n    for num, freq in count.items():\n        buckets[freq].append(num)\n    result = []\n    for i in range(len(buckets) - 1, -1, -1):\n        for num in buckets[i]:\n            result.append(num)\n            if len(result) == k:\n                return result"},
+    "tags": ["hash-map", "sorting", "heap"]
+  },
+  {
+    "id": "hm-05",
+    "title": "Longest Consecutive Sequence",
+    "difficulty": "Medium",
+    "category": "HashMap",
+    "description": "Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence. You must write an algorithm that runs in O(n) time.",
+    "examples": [
+      {"input": "nums = [100,4,200,1,3,2]", "output": "4", "explanation": "Longest sequence is [1,2,3,4]"},
+      {"input": "nums = [0,3,7,2,5,8,4,6,0,1]", "output": "9", "explanation": "Longest sequence is [0,1,2,3,4,5,6,7,8]"}
+    ],
+    "hints": ["Use a hash set for O(1) lookups.", "Only start counting from the beginning of a sequence (num-1 not in set)."],
+    "solution_approach": "Hash set. For each number, if num-1 is not in set, it's the start of a sequence. Count consecutive from there. O(n) time.",
+    "sample_code": {"python": "def longest_consecutive(nums):\n    num_set = set(nums)\n    max_len = 0\n    for n in num_set:\n        if n - 1 not in num_set:\n            length = 1\n            while n + length in num_set:\n                length += 1\n            max_len = max(max_len, length)\n    return max_len"},
+    "tags": ["hash-map", "array"]
+  },
+  {
+    "id": "greedy-01",
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "category": "Greedy",
+    "description": "Given an integer array nums, you are initially positioned at the first index. Each element in the array represents your maximum jump length at that position. Determine if you are able to reach the last index.",
+    "examples": [
+      {"input": "nums = [2,3,1,1,4]", "output": "true", "explanation": "Jump 1 step to index 1, then 3 steps to last"},
+      {"input": "nums = [3,2,1,0,4]", "output": "false", "explanation": "You will always be stuck at index 3 (value 0)"}
+    ],
+    "hints": ["Track the farthest reachable index.", "If current index exceeds farthest, you're stuck."],
+    "solution_approach": "Greedy: maintain max_reach. At each index, if i > max_reach, return False. Update max_reach = max(max_reach, i + nums[i]). O(n) time.",
+    "sample_code": {"python": "def can_jump(nums):\n    max_reach = 0\n    for i, n in enumerate(nums):\n        if i > max_reach:\n            return False\n        max_reach = max(max_reach, i + n)\n    return True"},
+    "tags": ["greedy", "dynamic-programming"]
+  },
+  {
+    "id": "greedy-02",
+    "title": "Activity Selection / Non-overlapping Intervals",
+    "difficulty": "Medium",
+    "category": "Greedy",
+    "description": "Given a collection of intervals, find the minimum number of intervals you need to remove to make the rest non-overlapping.",
+    "examples": [
+      {"input": "intervals = [[1,2],[2,3],[3,4],[1,3]]", "output": "1", "explanation": "Remove [1,3] to get [[1,2],[2,3],[3,4]]"},
+      {"input": "intervals = [[1,2],[1,2],[1,2]]", "output": "2", "explanation": "Keep one, remove two"},
+      {"input": "intervals = [[1,2],[2,3]]", "output": "0", "explanation": "No overlap, nothing to remove"}
+    ],
+    "hints": ["Sort intervals by end time.", "Greedy: always keep the interval that ends earliest."],
+    "solution_approach": "Sort by end time. Count how many we can keep without overlap. Answer = total - count. O(n log n) time.",
+    "sample_code": {"python": "def erase_overlap_intervals(intervals):\n    intervals.sort(key=lambda x: x[1])\n    count = 0\n    prev_end = float('-inf')\n    for s, e in intervals:\n        if s >= prev_end:\n            count += 1\n            prev_end = e\n    return len(intervals) - count"},
+    "tags": ["greedy", "sorting", "intervals"]
+  },
+  {
+    "id": "greedy-03",
+    "title": "Partition Labels",
+    "difficulty": "Medium",
+    "category": "Greedy",
+    "description": "You are given a string s. We want to partition the string into as many parts as possible so that each letter appears in at most one part. Return a list of integers representing the size of these parts.",
+    "examples": [
+      {"input": "s = 'ababcbacadefegdehijhklij'", "output": "[9,7,8]", "explanation": "Parts: 'ababcbaca', 'defegde', 'hijhklij'"},
+      {"input": "s = 'eccbbbbdec'", "output": "[10]", "explanation": "All letters overlap, single partition"}
+    ],
+    "hints": ["First, record the last occurrence of each character.", "Expand the current partition end to the last occurrence of each char seen."],
+    "solution_approach": "Record last index of each char. Iterate string, expanding partition end to max last occurrence. When i reaches partition end, cut. O(n) time.",
+    "sample_code": {"python": "def partition_labels(s):\n    last = {c: i for i, c in enumerate(s)}\n    result = []\n    start = end = 0\n    for i, c in enumerate(s):\n        end = max(end, last[c])\n        if i == end:\n            result.append(end - start + 1)\n            start = end + 1\n    return result"},
+    "tags": ["greedy", "string"]
+  }
+]

@@ -1,0 +1,46 @@
+id,role,topic,difficulty,question_text
+1,backend developer,python,easy,What is the difference between a list and a tuple in python?
+2,backend developer,python,medium,Explain how python's garbage collection works.
+3,backend developer,sql,easy,What is the difference between INNER JOIN and LEFT JOIN?
+4,backend developer,sql,medium,How would you optimize a slow running SQL query?
+5,backend developer,system design,medium,How would you design a URL shortening service like bit.ly?
+6,backend developer,system design,hard,How would you design a rate limiter for an API?
+7,backend developer,dsa,easy,What is the time complexity of binary search and why?
+8,backend developer,dsa,medium,Explain how a hash map works internally.
+9,backend developer,git,easy,What is the difference between git merge and git rebase?
+10,backend developer,docker,medium,What is the difference between a docker image and a docker container?
+11,backend developer,api design,medium,What is the difference between REST and GraphQL?
+12,backend developer,microservices,hard,How do microservices communicate with each other reliably?
+13,frontend developer,react,easy,What is the difference between state and props in react?
+14,frontend developer,react,medium,Explain how the virtual dom improves performance.
+15,frontend developer,javascript,easy,What is the difference between var, let, and const?
+16,frontend developer,javascript,medium,Explain how promises and async await work in javascript.
+17,frontend developer,css,easy,What is the difference between flexbox and grid?
+18,frontend developer,performance,medium,How would you improve the load time of a slow website?
+19,data scientist,python,medium,How would you handle missing values in a dataset?
+20,data scientist,machine learning,easy,What is the difference between supervised and unsupervised learning?
+21,data scientist,machine learning,medium,Explain the bias variance tradeoff.
+22,data scientist,machine learning,hard,How would you handle a highly imbalanced dataset for classification?
+23,data scientist,sql,medium,Write a query to find the second highest salary from an employee table.
+24,data scientist,statistics,medium,Explain what a p value means in simple terms.
+25,data scientist,deep learning,hard,How does backpropagation work in a neural network?
+26,devops engineer,docker,easy,What is the purpose of a Dockerfile?
+27,devops engineer,kubernetes,medium,What is the difference between a pod and a deployment in kubernetes?
+28,devops engineer,ci/cd,medium,What is the purpose of a CI/CD pipeline?
+29,devops engineer,cloud,medium,What is the difference between horizontal and vertical scaling?
+30,devops engineer,linux,easy,What is the difference between a process and a thread?
+31,mobile developer,android,medium,What is the difference between activity and fragment in android?
+32,mobile developer,ios,medium,What is the difference between value types and reference types in swift?
+33,mobile developer,react native,medium,How does react native communicate between javascript and native code?
+34,qa engineer,testing,easy,What is the difference between unit testing and integration testing?
+35,qa engineer,testing,medium,What is the difference between manual and automated testing?
+36,qa engineer,api testing,medium,How would you test a REST API without a frontend?
+37,cybersecurity analyst,security,easy,What is the difference between authentication and authorization?
+38,cybersecurity analyst,security,medium,What is a SQL injection attack and how do you prevent it?
+39,cybersecurity analyst,security,hard,How would you design a system to detect unusual login activity?
+40,cloud engineer,aws,medium,What is the difference between an EC2 instance and a lambda function?
+41,cloud engineer,cloud,easy,What is the difference between IaaS, PaaS, and SaaS?
+42,general,behavioral,easy,Tell me about a time you disagreed with a teammate and how you handled it.
+43,general,behavioral,easy,Tell me about a project you are proud of and why.
+44,general,behavioral,medium,Describe a time you had to learn a new technology quickly.
+45,general,behavioral,medium,How do you prioritize tasks when you have multiple deadlines at once.
