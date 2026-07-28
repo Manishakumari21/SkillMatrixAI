@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: skillmatrix-api
+    runtime: python
+    buildCommand: pip install -r Backend/requirements.txt && apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
+    startCommand: cd Backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: MONGO_URI
+        sync: false
+      - key: DB_NAME
+        value: skillmatrix
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PRIMARY_LLM_PROVIDER
+        value: groq
+      - key: SECONDARY_LLM_PROVIDER
+        value: gemini
+    plan: free
