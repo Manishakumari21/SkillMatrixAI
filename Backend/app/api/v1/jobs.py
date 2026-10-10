@@ -13,6 +13,7 @@ router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 class JobMatchRequest(BaseModel):
     resume_id: str
+    days: int = 30
 
 
 @router.get("")
@@ -22,6 +23,7 @@ async def list_jobs(
     location: str = Query("", description="Location filter"),
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
+    days: int = Query(30, ge=0, le=365, description="Only jobs posted within last N days (0 = all)"),
 ):
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
     result = await search_jobs(
@@ -30,7 +32,9 @@ async def list_jobs(
         location=location,
         page=page,
         per_page=per_page,
+        max_age_days=days,
     )
+    result["max_age_days"] = days
     return result
 
 
@@ -64,6 +68,12 @@ async def match_jobs(
     resume_set = set(resume_skills)
 
     all_jobs = await get_all_jobs()
+
+    if payload.days and payload.days > 0:
+        import time
+        from app.services.job_api_service import _parse_timestamp
+        cutoff = time.time() - payload.days * 86400
+        all_jobs = [j for j in all_jobs if _parse_timestamp(j.get("posted_at", "")) >= cutoff]
 
     matched_jobs = []
     for job in all_jobs:

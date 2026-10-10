@@ -1,0 +1,18 @@
+name: backend-ci
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install -r Backend/requirements.txt
+        working-directory: .
+      - name: Run DB-free unit tests
+        run: python -m pytest tests/test_ats_scoring.py tests/test_dsa_safety.py -v
+        working-directory: Backend

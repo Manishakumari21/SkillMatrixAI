@@ -8,7 +8,7 @@ async def test_health_check(client):
 
 
 @pytest.mark.asyncio
-async def test_register_login_and_me(client, test_user_payload):
+async def test_register_login_and_me(client, test_user_payload, clean_test_user):
     register_response = await client.post("/api/v1/auth/register", json=test_user_payload)
     assert register_response.status_code == 201
     assert register_response.json()["email"] == test_user_payload["email"]
@@ -27,7 +27,7 @@ async def test_register_login_and_me(client, test_user_payload):
 
 
 @pytest.mark.asyncio
-async def test_login_wrong_password_fails(client, test_user_payload):
+async def test_login_wrong_password_fails(client, test_user_payload, clean_test_user):
     await client.post("/api/v1/auth/register", json=test_user_payload)
     response = await client.post(
         "/api/v1/auth/login",

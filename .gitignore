@@ -31,6 +31,11 @@ Thumbs.db
 
 # Logs
 *.log
+error.log
+
+# Uploads (runtime user files, never commit)
+uploads/
+Backend/uploads/
 
 # Testing
 .coverage

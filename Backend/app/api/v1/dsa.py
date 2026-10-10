@@ -12,6 +12,24 @@ from app.models.dsa_problem import DSAProblem
 settings = get_settings()
 router = APIRouter(prefix="/dsa", tags=["dsa"])
 
+MAX_CODE_LENGTH = 20000
+BLOCKED_PATTERNS = [
+    "import os", "import subprocess", "import socket", "import shutil",
+    "from os", "from subprocess", "from socket", "__import__",
+    "open(", "eval(", "exec(", "os.system", "os.popen", "os.remove",
+    "os.unlink", "shutil.rmtree",
+]
+
+
+def validate_code_safety(code: str) -> str | None:
+    if len(code) > MAX_CODE_LENGTH:
+        return f"Code exceeds maximum length of {MAX_CODE_LENGTH} characters"
+    lowered = code.lower()
+    for pat in BLOCKED_PATTERNS:
+        if pat.lower() in lowered:
+            return f"Blocked pattern detected: '{pat}' is not allowed in practice submissions"
+    return None
+
 SUPPORTED_LANGUAGES = [
     "python", "python3", "javascript", "typescript", "java",
     "c", "cpp", "csharp", "go", "rust",
@@ -459,6 +477,10 @@ async def run_code(payload: RunCodeRequest):
 
     if not problem:
         return {"error": "Problem not found"}
+
+    safety_error = validate_code_safety(payload.code)
+    if safety_error:
+        return {"error": safety_error}
 
     test_cases = problem.examples
     if not test_cases:

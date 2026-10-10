@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter
-from app.api.v1 import auth, resume, skill_gap, interview, roadmap, ats_resume, progress, learning_resources, roadmap_export, mock_interview, jobs, dsa, ats_score, admin, portfolio
+from app.api.v1 import auth, resume, skill_gap, interview, roadmap, ats_resume, progress, learning_resources, roadmap_export, mock_interview, jobs, dsa, ats_score, admin, portfolio, apply
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -19,3 +19,4 @@ api_router.include_router(dsa.router)
 api_router.include_router(ats_score.router)
 api_router.include_router(admin.router)
 api_router.include_router(portfolio.router)
+api_router.include_router(apply.router)

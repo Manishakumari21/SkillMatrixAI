@@ -139,16 +139,46 @@ async def get_all_jobs(force_refresh: bool = False) -> list[dict]:
     return all_jobs
 
 
+def _parse_timestamp(val) -> float:
+    if isinstance(val, (int, float)) and val > 0:
+        return float(val)
+    if isinstance(val, str) and val:
+        try:
+            from datetime import datetime
+            dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
+            return dt.timestamp()
+        except (ValueError, AttributeError, TypeError) as exc:
+            logger.debug("Unparseable job timestamp %r: %s", val, exc)
+    return 0
+
+
 async def search_jobs(
     query: str = "",
     tags: list[str] = None,
     location: str = "",
     page: int = 1,
     per_page: int = 20,
+    max_age_days: int = 30,
 ) -> dict:
+    """Search jobs, excluding postings older than max_age_days.
+
+    max_age_days=30 default (nothing older than a month); pass 7 for
+    "this week" view. Jobs with unparseable/missing dates (mock fallback)
+    are excluded when a freshness filter is active. Pass max_age_days=0
+    to disable filtering and show everything.
+    """
     all_jobs = await get_all_jobs()
 
     filtered = all_jobs
+
+    if max_age_days and max_age_days > 0:
+        cutoff = time.time() - max_age_days * 86400
+        fresh = []
+        for j in filtered:
+            ts = _parse_timestamp(j.get("posted_at", ""))
+            if ts and ts >= cutoff:
+                fresh.append(j)
+        filtered = fresh
 
     if query:
         q = query.lower()
@@ -173,18 +203,6 @@ async def search_jobs(
             j for j in filtered
             if loc in j.get("location", "").lower()
         ]
-
-    def _parse_timestamp(val):
-        if isinstance(val, (int, float)) and val > 0:
-            return val
-        if isinstance(val, str) and val:
-            try:
-                from datetime import datetime, timezone
-                dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
-                return dt.timestamp()
-            except Exception:
-                pass
-        return 0
 
     filtered.sort(key=lambda j: _parse_timestamp(j.get("posted_at", "")), reverse=True)
 

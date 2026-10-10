@@ -46,8 +46,8 @@ async def generate_portfolio(
             if resume and resume.user_email == current_user.email:
                 resume_text = resume.extracted_text or ""
                 skills = resume.skills_found or []
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Portfolio resume lookup failed: %s", exc)
 
     if not resume_text:
         latest_resume = await Resume.find_one(
@@ -110,8 +110,8 @@ async def preview_portfolio(
             if resume and resume.user_email == current_user.email:
                 resume_text = resume.extracted_text or ""
                 skills = resume.skills_found or []
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Portfolio preview resume lookup failed: %s", exc)
 
     if not resume_text:
         latest_resume = await Resume.find_one(
@@ -186,8 +186,8 @@ async def download_live_portfolio(
             if resume and resume.user_email == current_user.email:
                 resume_text = resume.extracted_text or ""
                 skills = resume.skills_found or []
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Portfolio live-download resume lookup failed: %s", exc)
 
     if not resume_text:
         latest_resume = await Resume.find_one(

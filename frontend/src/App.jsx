@@ -12,6 +12,7 @@ import JobListings from "./pages/JobListings";
 import DSAPractice from "./pages/DSAPractice";
 import Portfolio from "./pages/Portfolio";
 import ProgressTracker from "./pages/ProgressTracker";
+import ApplyKit from "./pages/ApplyKit";
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/ats-resume" element={<ProtectedRoute><ATSResume /></ProtectedRoute>} />
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
           <Route path="/progress-tracker" element={<ProtectedRoute><ProgressTracker /></ProtectedRoute>} />
+          <Route path="/apply-kit" element={<ProtectedRoute><ApplyKit /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

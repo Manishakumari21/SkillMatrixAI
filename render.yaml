@@ -2,13 +2,13 @@ services:
   - type: web
     name: skillmatrix-api
     runtime: python
-    buildCommand: pip install -r Backend/requirements.txt && apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
+    buildCommand: pip install -r Backend/requirements.txt
     startCommand: cd Backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
         value: production
       - key: PYTHON_VERSION
-        value: "3.11"
+        value: "3.12"
       - key: MONGO_URI
         sync: false
       - key: DB_NAME
