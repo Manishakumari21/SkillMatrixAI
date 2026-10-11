@@ -1,6 +1,16 @@
+import os
+
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+
+# Test-only environment defaults, applied at import time so they exist *before*
+# pytest collects test modules. Several application modules call get_settings()
+# at import time, which requires JWT_SECRET to be present.
+# setdefault() is used so any real value supplied by the shell or CI (e.g.
+# GitHub Actions) always wins — this only fills gaps. The secret below is a
+# non-production test value and must never be used to sign real tokens.
+os.environ.setdefault("JWT_SECRET", "test-only-insecure-jwt-secret-do-not-use-in-production")
 
 
 @pytest_asyncio.fixture

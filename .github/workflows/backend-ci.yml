@@ -16,3 +16,9 @@ jobs:
       - name: Run DB-free unit tests
         run: python -m pytest tests/test_ats_scoring.py tests/test_dsa_safety.py -v
         working-directory: Backend
+        env:
+          # Dedicated, non-production test secret. Application modules call
+          # get_settings() at import time and jwt_secret has no default, so
+          # tests cannot even be collected without it. This value is only ever
+          # used by the CI test runner and is never a real signing key.
+          JWT_SECRET: ci-test-only-insecure-jwt-secret-do-not-use-in-production
