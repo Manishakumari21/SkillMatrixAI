@@ -40,9 +40,9 @@ async def clean_test_user(test_user_payload):
     except Exception as exc:
         pytest.skip(f"MongoDB unavailable, skipping DB test: {exc}")
     await User.find_one({"email": test_user_payload["email"]})
-    db = User.get_motor_collection()
+    db = User.get_pymongo_collection()
     await db.delete_many({"email": test_user_payload["email"]})
     yield
-    db = User.get_motor_collection()
+    db = User.get_pymongo_collection()
     await db.delete_many({"email": test_user_payload["email"]})
     await close_db()
