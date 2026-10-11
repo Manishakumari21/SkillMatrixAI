@@ -9,6 +9,7 @@ from app.api.v1.auth import get_current_user
 from app.models.user import User
 from app.models.user_progress import UserProgress
 from app.services.llm_service import call_ai_api_safe
+from app.services.user_keys import get_user_llm_keys
 from app.core.logger import logger
 
 settings = get_settings()
@@ -84,7 +85,7 @@ Rules:
 
 Return the JSON array directly, no markdown fences."""
 
-    llm_response = await asyncio.to_thread(call_ai_api_safe, prompt)
+    llm_response = await asyncio.to_thread(call_ai_api_safe, prompt, *get_user_llm_keys(current_user))
 
     if llm_response is None:
         fallback_questions = _get_fallback_questions(
@@ -240,7 +241,7 @@ Rules:
 - Skills should be specific (e.g., "recursion", "system design trade-offs", not just "coding").
 - If score is low, say so clearly. Do NOT sugarcoat."""
 
-        llm_response = await asyncio.to_thread(call_ai_api_safe, prompt)
+        llm_response = await asyncio.to_thread(call_ai_api_safe, prompt, *get_user_llm_keys(current_user))
 
         if llm_response is None:
             feedback = _fallback_evaluation(payload)

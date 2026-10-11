@@ -8,6 +8,7 @@ from app.models.user import User
 from app.models.resume import Resume
 from app.models.job_application import JobApplication
 from app.services.llm_service import call_ai_api_safe
+from app.services.user_keys import get_user_llm_keys
 from app.core.logger import logger
 
 router = APIRouter(prefix="/apply", tags=["apply"])
@@ -166,7 +167,7 @@ async def draft_answer(payload: AnswerRequest, current_user: User = Depends(get_
         f"Question: {payload.question}\n\n"
         "Draft a 3-6 sentence first-person answer the applicant can paste and edit."
     )
-    draft = call_ai_api_safe(prompt)
+    draft = call_ai_api_safe(prompt, *get_user_llm_keys(current_user))
     if not draft:
         # Deterministic fallback so the endpoint works without LLM keys
         draft = (

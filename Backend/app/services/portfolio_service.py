@@ -4,7 +4,7 @@ from app.services.llm_service import call_ai_api_safe
 from app.core.logger import logger
 
 
-async def generate_portfolio_content(data: dict) -> dict:
+async def generate_portfolio_content(data: dict, groq_api_key: str | None = None, gemini_api_key: str | None = None) -> dict:
     resume_text = data.get("resume_text", "")
     skills = data.get("skills", [])
 
@@ -51,7 +51,7 @@ Projects override: {data.get('projects', '') or '(none provided)'}
 Education: {data.get('education', '') or '(none provided)'}
 Resume text (for context): {resume_text[:2000] if resume_text else '(none)'}"""
 
-    llm_response = await asyncio.to_thread(call_ai_api_safe, prompt)
+    llm_response = await asyncio.to_thread(call_ai_api_safe, prompt, groq_api_key, gemini_api_key)
 
     if llm_response is not None:
         try:

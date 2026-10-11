@@ -6,6 +6,7 @@ from app.api.v1.auth import get_current_user
 from app.models.user import User
 from app.models.user_progress import UserProgress
 from app.services.llm_service import call_ai_api_safe
+from app.services.user_keys import get_user_llm_keys
 from app.services.retrieval_service import search_questions
 from app.core.logger import logger
 
@@ -58,7 +59,7 @@ Rules:
 - Do NOT include the answer.
 - Return ONLY the question text, nothing else."""
 
-    llm_answer = call_ai_api_safe(prompt)
+    llm_answer = call_ai_api_safe(prompt, *get_user_llm_keys(current_user))
 
     if llm_answer is None:
         return {
@@ -108,7 +109,7 @@ Rules:
 - Keep each field to one or two sentences max.
 - If the answer is empty or completely unrelated, give score 1 and say so."""
 
-    llm_response = call_ai_api_safe(prompt)
+    llm_response = call_ai_api_safe(prompt, *get_user_llm_keys(current_user))
 
     if llm_response is None:
         answer_length = len(payload.answer.strip())

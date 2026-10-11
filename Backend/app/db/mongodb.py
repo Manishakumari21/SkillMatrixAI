@@ -11,6 +11,7 @@ from app.models.learning_resource import LearningResource
 from app.models.action_verb import ActionVerb
 from app.models.portfolio import Portfolio
 from app.models.job_application import JobApplication
+from app.services.password_reset import PasswordResetToken
 from app.core.config import get_settings
 from app.core.logger import logger
 
@@ -31,6 +32,7 @@ documents_models = [
     ActionVerb,
     Portfolio,
     JobApplication,
+    PasswordResetToken,
 ]
 
 async def init_db() -> None:

@@ -1,11 +1,13 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 from app.core.logger import log_error, logger
 from app.core.security import create_access_token, decode_access_token, hash_password, verify_password
 from app.models.user import User
+from app.services.email_service import send_password_reset_email
+from app.services.password_reset import build_reset_url, consume_reset_token, issue_reset_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -72,4 +74,67 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 @router.get("/me", response_model=UserOut)
 async def read_current_user(current_user: User = Depends(get_current_user)):
-    return UserOut(id=str(current_user.id), email=current_user.email, full_name=current_user.full_name)   
+    return UserOut(id=str(current_user.id), email=current_user.email, full_name=current_user.full_name)
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8, max_length=128)
+
+
+@router.post("/forgot-password")
+async def forgot_password(payload: ForgotPasswordRequest):
+    """Start a password reset.
+
+    Note: this endpoint deliberately reports whether the email is registered,
+    which lets someone probe for valid accounts on this app. That was an
+    explicit product decision; if that ever changes, return the success message
+    unconditionally here instead.
+    """
+    user = await User.find_one({"email": payload.email})
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No account found with that email address",
+        )
+
+    raw_token = await issue_reset_token(payload.email)
+    reset_url = build_reset_url(raw_token)
+    emailed = send_password_reset_email(payload.email, reset_url)
+
+    logger.info("Password reset requested for %s (emailed=%s)", payload.email, emailed)
+
+    return {
+        "message": "Password reset link sent. Please check your email.",
+        # Useful for local development when SMTP is not configured; the link is
+        # also written to the server log. Production deployments configure SMTP.
+        "delivery": "email" if emailed else "log",
+    }
+
+
+@router.post("/reset-password")
+async def reset_password(payload: ResetPasswordRequest):
+    """Complete a password reset using a single-use emailed token."""
+    user_email = await consume_reset_token(payload.token)
+    if user_email is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This reset link is invalid or has expired. Please request a new one.",
+        )
+
+    user = await User.find_one({"email": user_email})
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This reset link is invalid or has expired. Please request a new one.",
+        )
+
+    user.hashed_password = hash_password(payload.new_password)
+    await user.save()
+
+    logger.info("Password reset completed for %s", user.email)
+    return {"message": "Your password has been updated. You can now sign in."}   

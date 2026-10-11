@@ -23,9 +23,22 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
+    # ── Email / Password Reset ────────────────────────────────────────
+    # Leave smtp_host empty to disable outbound email; the reset link is then
+    # written to the log instead so local development still works.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = True
+    email_from: str = "no-reply@skillmatrix.ai"
+    # Public origin of the FRONTEND, used to build the reset link in the email.
+    frontend_url: str = "http://localhost:5173"
+    password_reset_expire_minutes: int = 30
+
     # ── LLM ────────────────────────────────────────────────────────────
-    groq_api_key: str = " "
-    gemini_api_key: str = " "
+    groq_api_key: str = ""
+    gemini_api_key: str = ""
     primary_llm_provider: str = "groq"
     secondary_llm_provider: str = "gemini"
     llm_model_name: str = "llama-3.1-8b-instant"

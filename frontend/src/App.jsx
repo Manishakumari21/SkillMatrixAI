@@ -13,6 +13,9 @@ import DSAPractice from "./pages/DSAPractice";
 import Portfolio from "./pages/Portfolio";
 import ProgressTracker from "./pages/ProgressTracker";
 import ApplyKit from "./pages/ApplyKit";
+import ApiSettings from "./pages/ApiSettings";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -32,6 +35,8 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/skill-gap" element={<ProtectedRoute><SkillGap /></ProtectedRoute>} />
           <Route path="/mock-interview" element={<ProtectedRoute><MockInterview /></ProtectedRoute>} />
@@ -42,6 +47,7 @@ export default function App() {
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
           <Route path="/progress-tracker" element={<ProtectedRoute><ProgressTracker /></ProtectedRoute>} />
           <Route path="/apply-kit" element={<ProtectedRoute><ApplyKit /></ProtectedRoute>} />
+          <Route path="/settings/api-keys" element={<ProtectedRoute><ApiSettings /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

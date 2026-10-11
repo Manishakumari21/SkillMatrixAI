@@ -11,6 +11,7 @@ from app.models.user import User
 from app.models.resume import Resume
 from app.models.portfolio import Portfolio
 from app.services.portfolio_service import generate_portfolio_content
+from app.services.user_keys import get_user_llm_keys
 from app.services.portfolio_pdf_service import build_portfolio_pdf
 from app.core.logger import logger
 
@@ -73,7 +74,7 @@ async def generate_portfolio(
         "skills": skills,
     }
 
-    sections = await generate_portfolio_content(data)
+    sections = await generate_portfolio_content(data, *get_user_llm_keys(current_user))
 
     sections["contact_email"] = payload.email
     sections["contact_phone"] = payload.phone
@@ -137,7 +138,7 @@ async def preview_portfolio(
         "skills": skills,
     }
 
-    sections = await generate_portfolio_content(data)
+    sections = await generate_portfolio_content(data, *get_user_llm_keys(current_user))
     return sections
 
 
@@ -213,7 +214,7 @@ async def download_live_portfolio(
         "skills": skills,
     }
 
-    sections = await generate_portfolio_content(data)
+    sections = await generate_portfolio_content(data, *get_user_llm_keys(current_user))
 
     personal = {
         "full_name": payload.full_name,

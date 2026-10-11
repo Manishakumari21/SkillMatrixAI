@@ -9,6 +9,7 @@ from app.core.config import get_settings
 from app.api.v1.auth import get_current_user
 from app.models.user import User
 from app.services.llm_service import call_ai_api_safe
+from app.services.user_keys import get_user_llm_keys
 from app.core.logger import logger
 
 settings = get_settings()
@@ -35,7 +36,7 @@ async def generate_ats_resume(
     payload: ResumeInput,
     current_user: User = Depends(get_current_user),
 ):
-    optimized = optimize_resume_content(payload)
+    optimized = optimize_resume_content(payload, *get_user_llm_keys(current_user))
     pdf_bytes = build_pdf(optimized)
 
     return StreamingResponse(
@@ -50,11 +51,11 @@ async def preview_ats_resume(
     payload: ResumeInput,
     current_user: User = Depends(get_current_user),
 ):
-    optimized = optimize_resume_content(payload)
+    optimized = optimize_resume_content(payload, *get_user_llm_keys(current_user))
     return optimized
 
 
-def optimize_resume_content(data: ResumeInput) -> dict:
+def optimize_resume_content(data: ResumeInput, groq_api_key: str | None = None, gemini_api_key: str | None = None) -> dict:
     if not data.job_description.strip():
         return _build_plain(data)
 
@@ -120,7 +121,7 @@ Projects: {json.dumps(data.projects, indent=2)}
 Job Description:
 {data.job_description}"""
 
-    llm_response = call_ai_api_safe(prompt)
+    llm_response = call_ai_api_safe(prompt, groq_api_key, gemini_api_key)
 
     if llm_response is not None:
         try:
