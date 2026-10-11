@@ -1,3 +1,4 @@
+export { default as ApiKeyBanner, useUserKeys } from "./ApiKeyBanner";
 export { default as ScoreRing } from "./ScoreRing";
 export { default as ProgressBar } from "./ProgressBar";
 export { default as EmptyState } from "./EmptyState";

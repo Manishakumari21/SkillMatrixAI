@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import client from "../api/client";
-import { PageHeader, SectionLabel, EmptyState } from "../components/shared";
+import { PageHeader, SectionLabel, EmptyState, ApiKeyBanner } from "../components/shared";
 
 export default function Portfolio() {
   const [form, setForm] = useState({
@@ -143,6 +143,8 @@ export default function Portfolio() {
           title="Portfolio Generator"
           subtitle="Auto-generate a professional portfolio PDF. Pulls skills from your uploaded resume."
         />
+
+        <ApiKeyBanner />
 
         <div style={{ display: "flex", gap: "6px", marginBottom: "24px" }}>
           {["create", "preview", "my-portfolios"].map((tab) => (

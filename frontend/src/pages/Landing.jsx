@@ -242,6 +242,24 @@ export default function Landing() {
             the actual reasoning behind every recommendation.
           </p>
 
+          <div
+            style={{
+              background: "rgba(180, 190, 254, 0.07)",
+              border: "1px solid rgba(180, 190, 254, 0.16)",
+              borderRadius: "10px",
+              padding: "12px 16px",
+              marginBottom: "28px",
+              maxWidth: "500px",
+              fontSize: "13px",
+              lineHeight: 1.65,
+              color: "var(--ctp-subtext0)",
+            }}
+          >
+            <strong style={{ color: "var(--ctp-text)" }}>Free, and no shared AI keys.</strong>{" "}
+            Create an account, then add your own free Groq or Gemini key in
+            Settings to switch on AI features. Everything else works without one.
+          </div>
+
           <div style={{ display: "flex", gap: "14px", marginBottom: "48px" }}>
             <Link
               to="/register"

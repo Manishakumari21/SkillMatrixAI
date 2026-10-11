@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import client from "../api/client";
-import { PageHeader, SectionLabel, EmptyState, LoadingButton, StatCard } from "../components/shared";
+import { PageHeader, SectionLabel, EmptyState, LoadingButton, StatCard, ApiKeyBanner } from "../components/shared";
 
 const TABS = ["Applications", "Autofill Profile", "Question Helper", "HR Outreach"];
 const STATUSES = ["saved", "applied", "interview", "offer", "rejected"];
@@ -100,6 +100,8 @@ export default function ApplyKit() {
   return (
     <Layout>
       <PageHeader title="Apply Kit" subtitle="Track applications, autofill forms, draft screening answers, reach HR." />
+
+      <ApiKeyBanner />
       <div style={{ display: "flex", gap: "8px", marginBottom: "20px", flexWrap: "wrap" }}>
         {TABS.map((t) => (
           <button key={t} onClick={() => setTab(t)} style={t === tab ? btnPrimary : btnGhost}>{t}</button>

@@ -1,3 +1,5 @@
+import ApiKeyBanner from "../../components/shared/ApiKeyBanner";
+
 const difficultyStyles = {
   easy: { color: "var(--ctp-green)", bg: "var(--accent-green-dim)", border: "rgba(166, 227, 161, 0.15)" },
   medium: { color: "var(--ctp-peach)", bg: "var(--accent-peach-dim)", border: "rgba(250, 179, 135, 0.15)" },
@@ -19,6 +21,8 @@ export default function SetupPhase({
           Serious interview simulation with anti-cheating measures. No tab switching, no copy-paste, fullscreen locked.
         </p>
       </div>
+
+      <ApiKeyBanner />
 
       <div className="card" style={{ marginBottom: "24px" }}>
         <div className="card-body">

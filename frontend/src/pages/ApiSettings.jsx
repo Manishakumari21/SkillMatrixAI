@@ -142,19 +142,53 @@ export default function ApiSettings() {
       <div style={{ padding: "24px", maxWidth: "880px", margin: "0 auto" }}>
         <PageHeader
           title="API Keys"
-          subtitle="Bring your own AI provider keys to unlock the AI-powered features."
+          subtitle="Add your own free provider key to unlock the AI features."
         />
 
-        <div style={card}>
-          <SectionLabel>How this works</SectionLabel>
-          <p style={{ fontSize: "13px", color: "#a6adc8", lineHeight: 1.7, marginTop: 0 }}>
-            Keys are <strong style={{ color: "#e0def4" }}>yours alone</strong>. Each account uses
-            only its own keys — never another user&apos;s, and never a shared server key. They are
-            encrypted before being stored and are never sent back to your browser.
+        {status && !loading && (
+          <div
+            style={{
+              background: anyConfigured ? "rgba(166, 227, 161, 0.08)" : "rgba(249, 226, 175, 0.1)",
+              border: `1px solid ${anyConfigured ? "rgba(166, 227, 161, 0.2)" : "rgba(249, 226, 175, 0.2)"}`,
+              borderRadius: "8px",
+              padding: "12px 14px",
+              marginBottom: "16px",
+              fontSize: "13px",
+              lineHeight: 1.6,
+              color: anyConfigured ? "#a6e3a1" : "#f9e2af",
+            }}
+          >
+            {anyConfigured ? (
+              <>Your key is saved and encrypted. AI features are active on your account.</>
+            ) : (
+              <>
+                <strong>AI features are off.</strong> Add a free key below to switch them on.
+              </>
+            )}
+          </div>
+        )}
+
+        <div style={{ ...card, borderColor: "rgba(180, 190, 254, 0.18)" }}>
+          <SectionLabel color="#b4befe">Before you can use the AI features</SectionLabel>
+          <p style={{ fontSize: "13px", color: "#e0def4", lineHeight: 1.7, marginTop: 0 }}>
+            This app has <strong>no shared or server-wide API keys</strong>. The keys that were
+            previously configured on the server have been removed, and no user can spend
+            another user&apos;s quota.
           </p>
           <p style={{ fontSize: "13px", color: "#a6adc8", lineHeight: 1.7, marginBottom: 0 }}>
-            Without a key, everything still works using rule-based results. You only need a key for
-            AI-generated content such as interview grading and resume optimisation.
+            To unlock AI features, sign in and add <strong style={{ color: "#e0def4" }}>your own free key</strong>{" "}
+            below. It stays yours, it is encrypted before it is stored, and it is never sent back to
+            your browser. Both providers have generous free tiers — no card required.
+          </p>
+        </div>
+
+        <div style={card}>
+          <SectionLabel>What works without a key</SectionLabel>
+          <p style={{ fontSize: "13px", color: "#a6adc8", lineHeight: 1.7, marginTop: 0, marginBottom: 0 }}>
+            Everything else keeps working: ATS scoring, skill extraction, skill gap analysis,
+            roadmaps, DSA practice, job listings and progress tracking all run locally on your
+            data. Only AI-generated content — interview grading, resume optimisation and portfolio
+            writing — needs a key.
           </p>
         </div>
 
