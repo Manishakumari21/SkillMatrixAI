@@ -17,7 +17,6 @@ export default function ForgotPassword() {
     try {
       const { data } = await client.post("/auth/forgot-password", { email });
       setSent(true);
-      // Helpful locally: the server logs the link when SMTP is not configured.
       if (data.delivery === "log") {
         setDevLink("Email delivery is not configured on this server. Check the backend logs for the reset link.");
       }
