@@ -19,10 +19,9 @@ class Settings(BaseSettings):
     db_name: str = "skillmatrix"
 
     # ── Auth ───────────────────────────────────────────────────────────
-    jwt_secret: str
+    jwt_secret: str = "dev-only-insecure-jwt-secret-not-for-production"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
-
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_user: str = ""
